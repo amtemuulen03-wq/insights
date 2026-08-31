@@ -25,6 +25,9 @@ insight-images.tar
 *.tar
 *.zip
 
+# Leaking Server IP
+*.ps1
+
 # Editors and operating systems
 .vscode/
 .idea/
