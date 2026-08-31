@@ -1,0 +1,52 @@
+services:
+  insight:
+    image: insight-next:latest
+    restart: unless-stopped
+    expose:
+      - "3000"
+    environment:
+      NODE_ENV: production
+      INSIGHT_API_URL: http://insight-api:8000
+    depends_on:
+      insight-api:
+        condition: service_healthy
+    networks:
+      - insight_internal
+      - proxy_network
+
+  insight-api:
+    image: insight-api:latest
+    restart: unless-stopped
+    expose:
+      - "8000"
+    environment:
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_SERVICE_NAME: ${DB_SERVICE_NAME}
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "python -c \"import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health/db')\""
+        ]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+    networks:
+      - insight_internal
+      - bap_network
+
+networks:
+  insight_internal:
+    driver: bridge
+
+  bap_network:
+    external: true
+    name: bap_default
+
+  proxy_network:
+    external: true
+    name: proxy_net

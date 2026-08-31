@@ -1,0 +1,33 @@
+@'
+# Next.js
+node_modules/
+.next/
+out/
+coverage/
+*.log
+
+# Environment variables and passwords
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+backend/.venv/
+.pytest_cache/
+.mypy_cache/
+
+# Generated deployment files
+insight-images.tar
+*.tar
+*.zip
+
+# Editors and operating systems
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+'@ | Set-Content -Encoding UTF8 ".gitignore"

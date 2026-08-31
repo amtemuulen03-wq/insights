@@ -1,0 +1,55 @@
+INSIGHT_UPDATE_VERSION=2026-08-31-r12
+
+This is a project-root overlay package for the Insight Next.js + FastAPI app.
+
+Verified campaign-detail changes:
+- Facebook text source: T_FB_POST.DESCRIPTION
+- Instagram text source: T_IG_POST.DESCRIPTION
+- YouTube text source: T_YT_POST.TITLE
+- YouTube link source: T_YT_POST.PERMALINK_URL
+- Facebook carries both CLICKS (total) and LINK_CLICKS
+- Total CLICKS drives KPI totals, CTR, CPC, and post-table Clicks
+- LINK_CLICKS is restricted to Clicks by Source, Clicks vs Sales,
+  Clicks by Week and Source, and Performance Funnel clicks
+- Posts Performance returns every campaign post
+- Posts Performance defaults to five rows and adds a header expand/collapse
+  control when the campaign has more than five posts
+- Real CPC and CPM calculations
+- Sortable post table with linked 50-character captions
+- Platform Spend Distribution is based on spend and has no subtitle
+- Unknown publisher platform is excluded
+- Compact MNT spend is displayed inside readable publisher segments
+
+Required destination files:
+- backend/app/repositories/campaign_detail.py
+- backend/app/repositories/dashboard.py
+- app/api/auth/route.ts
+- app/components/app-shell.tsx
+- app/components/campaign-detail-client.tsx
+- app/components/password-gate.tsx
+- app/lib/insight-auth.ts
+- app/layout.tsx
+
+Dashboard and navigation changes:
+- Main Ad Spend KPI sums T_META_ADS_INSIGHTS.SPEND directly by DATE_START
+  inside the selected dashboard period
+- App-wide collapsible #0F172A sidebar wraps the KPI dashboard, Campaign
+  Inspect, Past Campaign, data-source, user, and settings routes
+- Dashboard and Data Source menus expand to their requested second-level items
+- Active navigation uses #829BEA
+- Sidebar PNG assets live under public/sidebar
+- dashboard-client.tsx is rendered at DASHBOARD > CAMPAIGN through
+  /insights/dashboard/campaign
+- /insights redirects to /insights/dashboard/campaign
+- DASHBOARD > KPI and DASHBOARD > OKR remain separate destinations
+- The server validates the authentication cookie before rendering the root
+  layout; the password wall is the outermost UI gate, and the app shell and
+  navigation sidebar render only after the INSIGHT_PASSWORD check succeeds
+- Authentication uses an HTTP-only session cookie and never sends the
+  configured password back to the browser
+- Sidebar links use full /insights browser navigations so they remain aligned
+  with the existing reverse proxy that removes /insights before Next.js routing
+- Active navigation accepts both proxy-facing and internal Next.js pathnames
+
+The included PowerShell loader validates archive markers and verifies copied
+file hashes before it starts either Docker build.
